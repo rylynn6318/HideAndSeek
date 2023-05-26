@@ -9,6 +9,8 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Player/HSPlayerState.h"
+#include "AbilitySystem/HSAbilitySystemComponent.h"
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -121,6 +123,16 @@ void AHSCharacter::Look(const FInputActionValue& Value)
 		// add yaw and pitch input to controller
 		AddControllerYawInput(LookAxisVector.X);
 		AddControllerPitchInput(LookAxisVector.Y);
+	}
+}
+
+void AHSCharacter::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+
+	if(AHSPlayerState* PS = NewController->GetPlayerState<AHSPlayerState>())
+	{
+		PS->GetAbilitySystemComponent()->InitAbilityActorInfo(PS, this);
 	}
 }
 

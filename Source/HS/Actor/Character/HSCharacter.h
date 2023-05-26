@@ -48,7 +48,8 @@ protected:
 
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
-			
+
+	virtual void PossessedBy(AController* NewController) override;
 
 protected:
 	// APawn interface
