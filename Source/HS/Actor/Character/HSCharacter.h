@@ -5,11 +5,12 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "InputActionValue.h"
+#include "GenericTeamAgentInterface.h"
 #include "HSCharacter.generated.h"
 
 
 UCLASS(config=Game)
-class AHSCharacter : public ACharacter
+class AHSCharacter : public ACharacter, public IGenericTeamAgentInterface
 {
 	GENERATED_BODY()
 
@@ -39,7 +40,11 @@ class AHSCharacter : public ACharacter
 
 public:
 	AHSCharacter();
-	
+
+	// IGenericTeamAgentInterface Interface
+	virtual void SetGenericTeamId(const FGenericTeamId& TeamID) override;
+	virtual FGenericTeamId GetGenericTeamId() const override;
+	// ~IGenericTeamAgentInterface Interface
 
 protected:
 
@@ -63,5 +68,9 @@ public:
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+
+protected:
+	UPROPERTY(BlueprintReadOnly, Category = "Teams")
+	FGenericTeamId TeamId = FGenericTeamId::NoTeam;
 };
 

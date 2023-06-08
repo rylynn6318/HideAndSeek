@@ -53,6 +53,16 @@ AHSCharacter::AHSCharacter()
 	// are set in the derived blueprint asset named ThirdPersonCharacter (to avoid direct content references in C++)
 }
 
+void AHSCharacter::SetGenericTeamId(const FGenericTeamId& TeamID)
+{
+	TeamId = TeamID;
+}
+
+FGenericTeamId AHSCharacter::GetGenericTeamId() const
+{
+	return TeamId;
+}
+
 void AHSCharacter::BeginPlay()
 {
 	// Call the base class  
