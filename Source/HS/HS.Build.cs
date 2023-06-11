@@ -7,6 +7,8 @@ public class HS : ModuleRules
 	public HS(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
+		PrivatePCHHeaderFile = "HS.h";
+		bUseUnity = false;
 
 		PublicDependencyModuleNames.AddRange(new string[]
 		{

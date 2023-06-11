@@ -4,4 +4,7 @@
 #include "Modules/ModuleManager.h"
 
 IMPLEMENT_PRIMARY_GAME_MODULE( FDefaultGameModuleImpl, HS, "HS" );
+
+DEFINE_LOG_CATEGORY(LogHS);
+DEFINE_LOG_CATEGORY(LogHSAbilitySystem);
  
