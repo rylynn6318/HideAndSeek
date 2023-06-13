@@ -13,7 +13,8 @@
 #include "Player/HSPlayerState.h"
 #include "AbilitySystem/HSAbilitySystemComponent.h"
 #include "Engine/LocalPlayer.h"
-
+#include "Input/HSEnhancedInputComponent.h"
+#include "Input/HSInputConfig.h"
 
 //////////////////////////////////////////////////////////////////////////
 // AHSCharacter
@@ -85,6 +86,17 @@ void AHSCharacter::BeginPlay()
 
 void AHSCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
 {
+	UHSEnhancedInputComponent* HSInputComponent = CastChecked<UHSEnhancedInputComponent>(PlayerInputComponent);
+	
+	//TArray<uint32> BindHandles;
+	//HSInputComponent->BindAbilityActions(
+	//	InputConfig,
+	//	this,
+	//	&ThisClass::Input_AbilityInputTagPressed,
+	//	&ThisClass::Input_AbilityInputTagReleased,
+	//	BindHandles
+	//);
+
 	// Set up action bindings
 	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent)) {
 		

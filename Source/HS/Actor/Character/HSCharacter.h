@@ -8,6 +8,7 @@
 #include "GenericTeamAgentInterface.h"
 #include "HSCharacter.generated.h"
 
+class UHSInputConfig;
 
 UCLASS(config=Game)
 class AHSCharacter : public ACharacter, public IGenericTeamAgentInterface
@@ -72,5 +73,8 @@ public:
 protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Teams")
 	FGenericTeamId TeamId = FGenericTeamId::NoTeam;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	TObjectPtr<UHSInputConfig> InputConfig;
 };
 
