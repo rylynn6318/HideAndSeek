@@ -6,12 +6,14 @@
 #include "GameFramework/Character.h"
 #include "InputActionValue.h"
 #include "GenericTeamAgentInterface.h"
+#include "AbilitySystemInterface.h"
 #include "HSCharacter.generated.h"
 
 class UHSInputConfig;
+class UHSAbilitySystemComponent;
 
 UCLASS(config=Game)
-class AHSCharacter : public ACharacter, public IGenericTeamAgentInterface
+class AHSCharacter : public ACharacter, public IAbilitySystemInterface, public IGenericTeamAgentInterface
 {
 	GENERATED_BODY()
 
@@ -47,6 +49,16 @@ public:
 	virtual FGenericTeamId GetGenericTeamId() const override;
 	// ~IGenericTeamAgentInterface Interface
 
+	// APawn Interface
+	virtual void OnRep_PlayerState() override;
+	virtual void PossessedBy(AController* NewController) override;
+	// ~APawn Interface
+
+	// IAbilitySystemInterface Interface
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+	// ~IAbilitySystemInterface Interface
+	UHSAbilitySystemComponent* GetHSAbilitySystemComponent() const;
+
 protected:
 
 	/** Called for movement input */
@@ -54,8 +66,6 @@ protected:
 
 	/** Called for looking input */
 	void Look(const FInputActionValue& Value);
-
-	virtual void PossessedBy(AController* NewController) override;
 
 protected:
 	// APawn interface
@@ -76,5 +86,8 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	TObjectPtr<UHSInputConfig> InputConfig;
+
+	UPROPERTY(EditDefaultsOnly, Category = "HS|Ability")
+	TObjectPtr<UHSAbilitySystemComponent> AbilitySystemComponent;
 };
 

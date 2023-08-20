@@ -66,6 +66,42 @@ FGenericTeamId AHSCharacter::GetGenericTeamId() const
 	return TeamId;
 }
 
+void AHSCharacter::OnRep_PlayerState()
+{
+	Super::OnRep_PlayerState();
+
+	// Client Only
+	AHSPlayerState* PS = GetPlayerState<AHSPlayerState>();
+	if (PS)
+	{
+		AbilitySystemComponent = Cast<UHSAbilitySystemComponent>(PS->GetAbilitySystemComponent());
+
+		AbilitySystemComponent->InitAbilityActorInfo(PS, this);
+	}
+}
+
+void AHSCharacter::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+
+	// Server Only
+	if (AHSPlayerState* PS = NewController->GetPlayerState<AHSPlayerState>())
+	{
+		AbilitySystemComponent = Cast<UHSAbilitySystemComponent>(PS->GetAbilitySystemComponent());
+		PS->GetAbilitySystemComponent()->InitAbilityActorInfo(PS, this);
+	}
+}
+
+UAbilitySystemComponent* AHSCharacter::GetAbilitySystemComponent() const
+{
+	return AbilitySystemComponent;
+}
+
+UHSAbilitySystemComponent* AHSCharacter::GetHSAbilitySystemComponent() const
+{
+	return AbilitySystemComponent;
+}
+
 void AHSCharacter::BeginPlay()
 {
 	// Call the base class  
@@ -149,17 +185,3 @@ void AHSCharacter::Look(const FInputActionValue& Value)
 		AddControllerPitchInput(LookAxisVector.Y);
 	}
 }
-
-void AHSCharacter::PossessedBy(AController* NewController)
-{
-	Super::PossessedBy(NewController);
-
-	if(AHSPlayerState* PS = NewController->GetPlayerState<AHSPlayerState>())
-	{
-		PS->GetAbilitySystemComponent()->InitAbilityActorInfo(PS, this);
-	}
-}
-
-
-
-
