@@ -1,5 +1,7 @@
 #include "Input/HSInputConfig.h"
 
+#include UE_INLINE_GENERATED_CPP_BY_NAME(HSInputConfig)
+
 const UInputAction* UHSInputConfig::FindNativeInputActionForTag(const FGameplayTag& InputTag, bool bLogNotFound) const
 {
 	for (const FHSInputAction& Action : NativeInputActions)

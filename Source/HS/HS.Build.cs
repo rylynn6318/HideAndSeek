@@ -23,6 +23,10 @@ public class HS : ModuleRules
 			"TargetingSystem",
 			"AIModule",
 			"UMG",
+			"AIModule",
+			"ModularGameplay",
+			"ModularGameplayActors",
+			"GameFeatures",
 		});
 
 		PrivateIncludePaths.AddRange(new string[] { "HS" });

@@ -3,6 +3,8 @@
 #include "HSVerbMessage.h"
 #include "GameplayEffectExtension.h"
 
+#include UE_INLINE_GENERATED_CPP_BY_NAME(HSHealthAttributeSet)
+
 void UHSHealthAttributeSet::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);

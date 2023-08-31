@@ -2,6 +2,8 @@
 #include "AbilitySystem/HSAbilitySystemComponent.h"
 #include "AbilitySystemInterface.h"
 
+#include UE_INLINE_GENERATED_CPP_BY_NAME(HSAbilitySystemGlobals)
+
 UHSAbilitySystemComponent* UHSAbilitySystemGlobals::GetHSAbilitySystemComponentFromActor(const AActor* Actor, bool LookForComponent)
 {
 	if (Actor == nullptr)

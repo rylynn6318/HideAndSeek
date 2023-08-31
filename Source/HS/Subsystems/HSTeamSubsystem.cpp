@@ -1,6 +1,7 @@
 #include "Subsystems/HSTeamSubsystem.h"
-
 #include "GenericTeamAgentInterface.h"
+
+#include UE_INLINE_GENERATED_CPP_BY_NAME(HSTeamSubsystem)
 
 EHSTeamComparison UHSTeamSubsystem::CompareTeams(const UObject* A, const UObject* B, int32& TeamIdA, int32& TeamIdB) const
 {

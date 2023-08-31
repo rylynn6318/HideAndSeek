@@ -2,6 +2,8 @@
 #include "AbilitySystemComponent.h"
 #include "AbilitySystem/HSAbilitySystemComponent.h"
 
+#include UE_INLINE_GENERATED_CPP_BY_NAME(HSPlayerState)
+
 AHSPlayerState::AHSPlayerState()
 {
 	PrimaryActorTick.bCanEverTick = true;

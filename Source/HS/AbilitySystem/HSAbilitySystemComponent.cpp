@@ -2,6 +2,8 @@
 #include "AbilitySystem/GameplayAbilities/HSGameplayAbility.h"
 #include "NativeGameplayTags.h"
 
+#include UE_INLINE_GENERATED_CPP_BY_NAME(HSAbilitySystemComponent)
+
 UE_DEFINE_GAMEPLAY_TAG_STATIC(TAG_Gameplay_AbilityInputBlocked, "Gameplay.AbilityInputBlocked")
 
 void UHSAbilitySystemComponent::AbilityInputTagPressed(const FGameplayTag& InputTag)

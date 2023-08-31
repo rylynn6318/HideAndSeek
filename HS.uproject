@@ -9,9 +9,9 @@
 			"Type": "Runtime",
 			"LoadingPhase": "Default",
 			"AdditionalDependencies": [
-				"GameplayAbilities",
 				"Engine",
-				"EnhancedInput"
+				"EnhancedInput",
+				"ModularGameplay"
 			]
 		}
 	],
@@ -29,6 +29,22 @@
 		},
 		{
 			"Name": "TargetingSystem",
+			"Enabled": true
+		},
+		{
+			"Name": "EnhancedInput",
+			"Enabled": true
+		},
+		{
+			"Name": "ModularGameplay",
+			"Enabled": true
+		},
+		{
+			"Name": "GameFeatures",
+			"Enabled": true
+		},
+		{
+			"Name": "ModularGameplayActors",
 			"Enabled": true
 		}
 	],

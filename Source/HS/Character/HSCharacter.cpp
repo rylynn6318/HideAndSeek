@@ -16,6 +16,8 @@
 #include "Input/HSEnhancedInputComponent.h"
 #include "Input/HSInputConfig.h"
 
+#include UE_INLINE_GENERATED_CPP_BY_NAME(HSCharacter)
+
 //////////////////////////////////////////////////////////////////////////
 // AHSCharacter
 
