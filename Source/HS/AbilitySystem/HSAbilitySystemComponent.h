@@ -4,6 +4,7 @@
 #include "AbilitySystemComponent.h"
 #include "HSAbilitySystemComponent.generated.h"
 
+class UHSAbilityTagRelationshipMapping;
 
 UCLASS()
 class HS_API UHSAbilitySystemComponent : public UAbilitySystemComponent
@@ -13,12 +14,18 @@ class HS_API UHSAbilitySystemComponent : public UAbilitySystemComponent
 public:
 	void AbilityInputTagPressed(const FGameplayTag& InputTag);
 	void AbilityInputTagReleased(const FGameplayTag& InputTag);
-	
-protected:
+
+	/** Sets the current tag relationship mapping, if null it will clear it out */
+	void SetTagRelationshipMapping(UHSAbilityTagRelationshipMapping* NewMapping);
+
 	void ProcessAbilityInput(float DeltaTime, bool bGamePaused);
 	void ClearAbilityInput();
 
 protected:
+	// If set, this table is used to look up tag relationships for activate and cancel
+	UPROPERTY()
+	TObjectPtr<UHSAbilityTagRelationshipMapping> TagRelationshipMapping;
+
 	// Handles to abilities that had their input pressed this frame.
 	TArray<FGameplayAbilitySpecHandle> InputPressedSpecHandles;
 

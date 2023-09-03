@@ -7,7 +7,6 @@ public class HS : ModuleRules
 	public HS(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
-		PrivatePCHHeaderFile = "HS.h";
 		bUseUnity = false;
 
 		PublicDependencyModuleNames.AddRange(new string[]
@@ -27,6 +26,7 @@ public class HS : ModuleRules
 			"ModularGameplay",
 			"ModularGameplayActors",
 			"GameFeatures",
+			"NetCore",
 		});
 
 		PrivateIncludePaths.AddRange(new string[] { "HS" });

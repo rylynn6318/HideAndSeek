@@ -1,6 +1,7 @@
 #include "AbilitySystem/HSAbilitySystemComponent.h"
-#include "AbilitySystem/GameplayAbilities/HSGameplayAbility.h"
+#include "AbilitySystem/Abilities/HSGameplayAbility.h"
 #include "NativeGameplayTags.h"
+#include "AbilitySystem/HSAbilityTagRelationshipMapping.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(HSAbilitySystemComponent)
 
@@ -34,6 +35,11 @@ void UHSAbilitySystemComponent::AbilityInputTagReleased(const FGameplayTag& Inpu
 			}
 		}
 	}
+}
+
+void UHSAbilitySystemComponent::SetTagRelationshipMapping(UHSAbilityTagRelationshipMapping* NewMapping)
+{
+	TagRelationshipMapping = NewMapping;
 }
 
 void UHSAbilitySystemComponent::ProcessAbilityInput(float DeltaTime, bool bGamePaused)

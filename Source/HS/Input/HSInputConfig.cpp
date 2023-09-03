@@ -1,4 +1,5 @@
 #include "Input/HSInputConfig.h"
+#include "HSLogChannels.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(HSInputConfig)
 

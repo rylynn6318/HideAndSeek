@@ -10,7 +10,7 @@
 #include "GameFeaturesSubsystemSettings.h"
 #include "TimerManager.h"
 //#include "Settings/HSSettingsLocal.h"
-//#include "HSLogChannels.h"
+#include "HSLogChannels.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(HSExperienceManagerComponent)
 
@@ -31,6 +31,8 @@ UHSExperienceManagerComponent::UHSExperienceManagerComponent(const FObjectInitia
 
 void UHSExperienceManagerComponent::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
 	DOREPLIFETIME(UHSExperienceManagerComponent, CurrentExperience);
 }
 
@@ -42,16 +44,16 @@ void UHSExperienceManagerComponent::EndPlay(const EEndPlayReason::Type EndPlayRe
 	////@TODO: This should be handled FILO as well
 	//for (const FString& PluginURL : GameFeaturePluginURLs)
 	//{
-	//	if (ULyraExperienceManager::RequestToDeactivatePlugin(PluginURL))
+	//	if (UHSExperienceManager::RequestToDeactivatePlugin(PluginURL))
 	//	{
 	//		UGameFeaturesSubsystem::Get().DeactivateGameFeaturePlugin(PluginURL);
 	//	}
 	//}
 
 	////@TODO: Ensure proper handling of a partially-loaded state too
-	//if (LoadState == ELyraExperienceLoadState::Loaded)
+	//if (LoadState == EHSExperienceLoadState::Loaded)
 	//{
-	//	LoadState = ELyraExperienceLoadState::Deactivating;
+	//	LoadState = EHSExperienceLoadState::Deactivating;
 
 	//	// Make sure we won't complete the transition prematurely if someone registers as a pauser but fires immediately
 	//	NumExpectedPausers = INDEX_NONE;
@@ -79,7 +81,7 @@ void UHSExperienceManagerComponent::EndPlay(const EEndPlayReason::Type EndPlayRe
 	//		};
 
 	//	DeactivateListOfActions(CurrentExperience->Actions);
-	//	for (const TObjectPtr<ULyraExperienceActionSet>& ActionSet : CurrentExperience->ActionSets)
+	//	for (const TObjectPtr<UHSExperienceActionSet>& ActionSet : CurrentExperience->ActionSets)
 	//	{
 	//		if (ActionSet != nullptr)
 	//		{
@@ -91,7 +93,7 @@ void UHSExperienceManagerComponent::EndPlay(const EEndPlayReason::Type EndPlayRe
 
 	//	if (NumExpectedPausers > 0)
 	//	{
-	//		UE_LOG(LogLyraExperience, Error, TEXT("Actions that have asynchronous deactivation aren't fully supported yet in Lyra experiences"));
+	//		UE_LOG(LogHSExperience, Error, TEXT("Actions that have asynchronous deactivation aren't fully supported yet in HS experiences"));
 	//	}
 
 	//	if (NumExpectedPausers == NumObservedPausers)
@@ -116,36 +118,160 @@ void UHSExperienceManagerComponent::EndPlay(const EEndPlayReason::Type EndPlayRe
 
 void UHSExperienceManagerComponent::SetCurrentExperience(FPrimaryAssetId ExperienceId)
 {
+	UHSAssetManager& AssetManager = UHSAssetManager::Get();
+	FSoftObjectPath AssetPath = AssetManager.GetPrimaryAssetPath(ExperienceId);
+	TSubclassOf<UHSExperienceDefinition> AssetClass = Cast<UClass>(AssetPath.TryLoad());
+	check(AssetClass);
+	const UHSExperienceDefinition* Experience = GetDefault<UHSExperienceDefinition>(AssetClass);
+
+	check(Experience != nullptr);
+	check(CurrentExperience == nullptr);
+	CurrentExperience = Experience;
+	StartExperienceLoad();
 }
 
 void UHSExperienceManagerComponent::CallOrRegister_OnExperienceLoaded_HighPriority(FOnHSExperienceLoaded::FDelegate&& Delegate)
 {
+	if (IsExperienceLoaded())
+	{
+		Delegate.Execute(CurrentExperience);
+	}
+	else
+	{
+		OnExperienceLoaded_HighPriority.Add(MoveTemp(Delegate));
+	}
 }
 
 void UHSExperienceManagerComponent::CallOrRegister_OnExperienceLoaded(FOnHSExperienceLoaded::FDelegate&& Delegate)
 {
+	if (IsExperienceLoaded())
+	{
+		Delegate.Execute(CurrentExperience);
+	}
+	else
+	{
+		OnExperienceLoaded.Add(MoveTemp(Delegate));
+	}
 }
 
 void UHSExperienceManagerComponent::CallOrRegister_OnExperienceLoaded_LowPriority(FOnHSExperienceLoaded::FDelegate&& Delegate)
 {
+	if (IsExperienceLoaded())
+	{
+		Delegate.Execute(CurrentExperience);
+	}
+	else
+	{
+		OnExperienceLoaded_LowPriority.Add(MoveTemp(Delegate));
+	}
 }
 
 const UHSExperienceDefinition* UHSExperienceManagerComponent::GetCurrentExperienceChecked() const
 {
-	return nullptr;
+	check(LoadState == EHSExperienceLoadState::Loaded);
+	check(CurrentExperience != nullptr);
+	return CurrentExperience;
 }
 
 bool UHSExperienceManagerComponent::IsExperienceLoaded() const
 {
-	return false;
+	return (LoadState == EHSExperienceLoadState::Loaded) && (CurrentExperience != nullptr);
 }
 
 void UHSExperienceManagerComponent::OnRep_CurrentExperience()
 {
+	StartExperienceLoad();
 }
 
 void UHSExperienceManagerComponent::StartExperienceLoad()
 {
+	check(CurrentExperience != nullptr);
+	check(LoadState == EHSExperienceLoadState::Unloaded);
+
+	UE_LOG(LogHSExperience, Log, TEXT("EXPERIENCE: StartExperienceLoad(CurrentExperience = %s, %s)"),
+		*CurrentExperience->GetPrimaryAssetId().ToString(),
+		*GetClientServerContextString(this));
+
+	LoadState = EHSExperienceLoadState::Loading;
+
+	UHSAssetManager& AssetManager = UHSAssetManager::Get();
+
+	TSet<FPrimaryAssetId> BundleAssetList;
+	TSet<FSoftObjectPath> RawAssetList;
+
+	BundleAssetList.Add(CurrentExperience->GetPrimaryAssetId());
+	for (const TObjectPtr<UHSExperienceActionSet>& ActionSet : CurrentExperience->ActionSets)
+	{
+		if (ActionSet != nullptr)
+		{
+			BundleAssetList.Add(ActionSet->GetPrimaryAssetId());
+		}
+	}
+
+	// Load assets associated with the experience
+
+	TArray<FName> BundlesToLoad;
+	BundlesToLoad.Add(FHSBundles::Equipped);
+
+	//@TODO: Centralize this client/server stuff into the HSAssetManager
+	const ENetMode OwnerNetMode = GetOwner()->GetNetMode();
+	const bool bLoadClient = GIsEditor || (OwnerNetMode != NM_DedicatedServer);
+	const bool bLoadServer = GIsEditor || (OwnerNetMode != NM_Client);
+	if (bLoadClient)
+	{
+		BundlesToLoad.Add(UGameFeaturesSubsystemSettings::LoadStateClient);
+	}
+	if (bLoadServer)
+	{
+		BundlesToLoad.Add(UGameFeaturesSubsystemSettings::LoadStateServer);
+	}
+
+	TSharedPtr<FStreamableHandle> BundleLoadHandle = nullptr;
+	if (BundleAssetList.Num() > 0)
+	{
+		BundleLoadHandle = AssetManager.ChangeBundleStateForPrimaryAssets(BundleAssetList.Array(), BundlesToLoad, {}, false, FStreamableDelegate(), FStreamableManager::AsyncLoadHighPriority);
+	}
+
+	TSharedPtr<FStreamableHandle> RawLoadHandle = nullptr;
+	if (RawAssetList.Num() > 0)
+	{
+		RawLoadHandle = AssetManager.LoadAssetList(RawAssetList.Array(), FStreamableDelegate(), FStreamableManager::AsyncLoadHighPriority, TEXT("StartExperienceLoad()"));
+	}
+
+	// If both async loads are running, combine them
+	TSharedPtr<FStreamableHandle> Handle = nullptr;
+	if (BundleLoadHandle.IsValid() && RawLoadHandle.IsValid())
+	{
+		Handle = AssetManager.GetStreamableManager().CreateCombinedHandle({ BundleLoadHandle, RawLoadHandle });
+	}
+	else
+	{
+		Handle = BundleLoadHandle.IsValid() ? BundleLoadHandle : RawLoadHandle;
+	}
+
+	FStreamableDelegate OnAssetsLoadedDelegate = FStreamableDelegate::CreateUObject(this, &ThisClass::OnExperienceLoadComplete);
+	if (!Handle.IsValid() || Handle->HasLoadCompleted())
+	{
+		// Assets were already loaded, call the delegate now
+		FStreamableHandle::ExecuteDelegate(OnAssetsLoadedDelegate);
+	}
+	else
+	{
+		Handle->BindCompleteDelegate(OnAssetsLoadedDelegate);
+
+		Handle->BindCancelDelegate(FStreamableDelegate::CreateLambda([OnAssetsLoadedDelegate]()
+			{
+				OnAssetsLoadedDelegate.ExecuteIfBound();
+			}));
+	}
+
+	// This set of assets gets preloaded, but we don't block the start of the experience based on it
+	TSet<FPrimaryAssetId> PreloadAssetList;
+	//@TODO: Determine assets to preload (but not blocking-ly)
+	if (PreloadAssetList.Num() > 0)
+	{
+		AssetManager.ChangeBundleStateForPrimaryAssets(PreloadAssetList.Array(), BundlesToLoad, {});
+	}
 }
 
 void UHSExperienceManagerComponent::OnExperienceLoadComplete()

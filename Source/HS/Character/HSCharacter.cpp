@@ -8,13 +8,8 @@
 #include "GameFramework/Controller.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/PlayerController.h"
-#include "EnhancedInputComponent.h"
-#include "EnhancedInputSubsystems.h"
 #include "Player/HSPlayerState.h"
 #include "AbilitySystem/HSAbilitySystemComponent.h"
-#include "Engine/LocalPlayer.h"
-#include "Input/HSEnhancedInputComponent.h"
-#include "Input/HSInputConfig.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(HSCharacter)
 
@@ -104,86 +99,7 @@ UHSAbilitySystemComponent* AHSCharacter::GetHSAbilitySystemComponent() const
 	return AbilitySystemComponent;
 }
 
-void AHSCharacter::BeginPlay()
+void AHSCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
-	// Call the base class  
-	Super::BeginPlay();
-
-	//Add Input Mapping Context
-	if (APlayerController* PlayerController = Cast<APlayerController>(Controller))
-	{
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
-		{
-			Subsystem->AddMappingContext(DefaultMappingContext, 0);
-		}
-	}
-}
-
-//////////////////////////////////////////////////////////////////////////
-// Input
-
-void AHSCharacter::SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent)
-{
-	UHSEnhancedInputComponent* HSInputComponent = CastChecked<UHSEnhancedInputComponent>(PlayerInputComponent);
-	
-	//TArray<uint32> BindHandles;
-	//HSInputComponent->BindAbilityActions(
-	//	InputConfig,
-	//	this,
-	//	&ThisClass::Input_AbilityInputTagPressed,
-	//	&ThisClass::Input_AbilityInputTagReleased,
-	//	BindHandles
-	//);
-
-	// Set up action bindings
-	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent)) {
-		
-		//Jumping
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ACharacter::Jump);
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
-
-		//Moving
-		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AHSCharacter::Move);
-
-		//Looking
-		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AHSCharacter::Look);
-
-	}
-
-}
-
-void AHSCharacter::Move(const FInputActionValue& Value)
-{
-	// input is a Vector2D
-	FVector2D MovementVector = Value.Get<FVector2D>();
-
-	if (Controller != nullptr)
-	{
-		// find out which way is forward
-		const FRotator Rotation = Controller->GetControlRotation();
-		const FRotator YawRotation(0, Rotation.Yaw, 0);
-
-		// get forward vector
-		const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
-	
-		// get right vector 
-		const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
-
-		// add movement 
-		AddMovementInput(ForwardDirection, MovementVector.Y);
-		AddMovementInput(RightDirection, MovementVector.X);
-	}
-}
-
-void AHSCharacter::Look(const FInputActionValue& Value)
-{
-	// input is a Vector2D
-	FVector2D LookAxisVector = Value.Get<FVector2D>();
-
-	if (Controller != nullptr)
-	{
-		// add yaw and pitch input to controller
-		AddControllerYawInput(LookAxisVector.X);
-		AddControllerPitchInput(LookAxisVector.Y);
-	}
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
