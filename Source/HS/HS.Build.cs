@@ -26,6 +26,10 @@ public class HS : ModuleRules
 			"ModularGameplay",
 			"ModularGameplayActors",
 			"GameFeatures",
+		});
+
+		PrivateDependencyModuleNames.AddRange(new string[]
+		{
 			"NetCore",
 		});
 
