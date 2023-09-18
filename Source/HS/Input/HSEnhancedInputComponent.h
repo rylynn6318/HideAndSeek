@@ -29,7 +29,7 @@ public:
 	{
 		check(InputConfig);
 
-		for (const FGASInputAction& Action : InputConfig->AbilityInputActions)
+		for (const FHSInputAction& Action : InputConfig->AbilityInputActions)
 		{
 			if (Action.InputAction && Action.InputTag.IsValid())
 			{
