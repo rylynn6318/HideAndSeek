@@ -31,6 +31,7 @@ public class HS : ModuleRules
 		PrivateDependencyModuleNames.AddRange(new string[]
 		{
 			"NetCore",
+			"GameplayMessageRuntime",
 		});
 
 		PrivateIncludePaths.AddRange(new string[] { "HS" });
