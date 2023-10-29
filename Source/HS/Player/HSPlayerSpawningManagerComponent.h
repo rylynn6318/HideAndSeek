@@ -29,15 +29,14 @@ public:
 protected:
 	// Utility
 	APlayerStart* GetFirstRandomUnoccupiedPlayerStart(AController* Controller, const TArray<AHSPlayerStart*>& FoundStartPoints) const;
-	
+
 	virtual AActor* OnChoosePlayerStart(AController* Player, TArray<AHSPlayerStart*>& PlayerStarts) { return nullptr; }
 	virtual void OnFinishRestartPlayer(AController* Player, const FRotator& StartRotation) { }
 
-	UFUNCTION(BlueprintImplementableEvent, meta=(DisplayName=OnFinishRestartPlayer))
-	void K2_OnFinishRestartPlayer(AController* Player, const FRotator& StartRotation);
+	UFUNCTION(BlueprintImplementableEvent, meta = (DisplayName = OnFinishRestartPlayer))
+	void BP_OnFinishRestartPlayer(AController* Player, const FRotator& StartRotation);
 
 private:
-
 	/** We proxy these calls from AHSGameMode, to this component so that each experience can more easily customize the respawn system they want. */
 	AActor* ChoosePlayerStart(AController* Player);
 	bool ControllerCanRestart(AController* Player);

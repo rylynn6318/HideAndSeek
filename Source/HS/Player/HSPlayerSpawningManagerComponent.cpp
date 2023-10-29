@@ -11,7 +11,7 @@
 DEFINE_LOG_CATEGORY_STATIC(LogPlayerSpawning, Log, All);
 
 UHSPlayerSpawningManagerComponent::UHSPlayerSpawningManagerComponent(const FObjectInitializer& ObjectInitializer)
-: Super(ObjectInitializer)
+	: Super(ObjectInitializer)
 {
 	SetIsReplicatedByDefault(false);
 	bAutoRegister = true;
@@ -162,7 +162,7 @@ bool UHSPlayerSpawningManagerComponent::ControllerCanRestart(AController* Player
 void UHSPlayerSpawningManagerComponent::FinishRestartPlayer(AController* NewPlayer, const FRotator& StartRotation)
 {
 	OnFinishRestartPlayer(NewPlayer, StartRotation);
-	K2_OnFinishRestartPlayer(NewPlayer, StartRotation);
+	BP_OnFinishRestartPlayer(NewPlayer, StartRotation);
 }
 
 //================================================================
@@ -185,13 +185,12 @@ APlayerStart* UHSPlayerSpawningManagerComponent::GetFirstRandomUnoccupiedPlayerS
 
 			switch (State)
 			{
-				case EHSPlayerStartLocationOccupancy::Empty:
-					UnOccupiedStartPoints.Add(StartPoint);
-					break;
-				case EHSPlayerStartLocationOccupancy::Partial:
-					OccupiedStartPoints.Add(StartPoint);
-					break;
-
+			case EHSPlayerStartLocationOccupancy::Empty:
+				UnOccupiedStartPoints.Add(StartPoint);
+				break;
+			case EHSPlayerStartLocationOccupancy::Partial:
+				OccupiedStartPoints.Add(StartPoint);
+				break;
 			}
 		}
 
