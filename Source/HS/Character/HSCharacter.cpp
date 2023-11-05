@@ -99,6 +99,18 @@ UHSAbilitySystemComponent* AHSCharacter::GetHSAbilitySystemComponent() const
 	return AbilitySystemComponent;
 }
 
+void AHSCharacter::ToggleCrouch()
+{
+	if (bIsCrouched)
+	{
+		UnCrouch();
+	}
+	else
+	{
+		Crouch();
+	}
+}
+
 void AHSCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);

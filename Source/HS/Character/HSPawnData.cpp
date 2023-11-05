@@ -6,4 +6,5 @@ UHSPawnData::UHSPawnData()
 {
 	PawnClass = nullptr;
 	TagRelationshipMapping = nullptr;
+	InputConfig = nullptr;
 }

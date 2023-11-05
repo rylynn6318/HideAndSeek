@@ -41,6 +41,8 @@ public:
 	// ~IAbilitySystemInterface Interface
 	UHSAbilitySystemComponent* GetHSAbilitySystemComponent() const;
 
+	void ToggleCrouch();
+
 protected:
 	// APawn interface
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
