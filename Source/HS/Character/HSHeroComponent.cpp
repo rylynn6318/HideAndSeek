@@ -12,11 +12,11 @@
 #include "AbilitySystem/HSAbilitySystemComponent.h"
 #include "Input/HSInputConfig.h"
 #include "Input/HSInputComponent.h"
-//#include "Camera/HSCameraComponent.h"
+#include "Camera/HSCameraComponent.h"
 #include "HSGameplayTags.h"
 #include "Components/GameFrameworkComponentManager.h"
 #include "PlayerMappableInputConfig.h"
-//#include "Camera/HSCameraMode.h"
+#include "Camera/HSCameraMode.h"
 #include "UserSettings/EnhancedInputUserSettings.h"
 #include "InputMappingContext.h"
 
@@ -173,11 +173,10 @@ void UHSHeroComponent::HandleChangeInitState(UGameFrameworkComponentManager* Man
 		// Hook up the delegate for all pawns, in case we spectate later
 		if (PawnData)
 		{
-			// TODO : 카메라
-			//if (UHSCameraComponent* CameraComponent = UHSCameraComponent::FindCameraComponent(Pawn))
-			//{
-			//	CameraComponent->DetermineCameraModeDelegate.BindUObject(this, &ThisClass::DetermineCameraMode);
-			//}
+			if (UHSCameraComponent* CameraComponent = UHSCameraComponent::FindCameraComponent(Pawn))
+			{
+				CameraComponent->DetermineCameraModeDelegate.BindUObject(this, &ThisClass::DetermineCameraMode);
+			}
 		}
 	}
 }
@@ -450,44 +449,44 @@ void UHSHeroComponent::Input_Crouch(const FInputActionValue& InputActionValue)
 	}
 }
 
-//TSubclassOf<UHSCameraMode> UHSHeroComponent::DetermineCameraMode() const
-//{
-//	if (AbilityCameraMode)
-//	{
-//		return AbilityCameraMode;
-//	}
-//
-//	const APawn* Pawn = GetPawn<APawn>();
-//	if (!Pawn)
-//	{
-//		return nullptr;
-//	}
-//
-//	if (UHSPawnExtensionComponent* PawnExtComp = UHSPawnExtensionComponent::FindPawnExtensionComponent(Pawn))
-//	{
-//		if (const UHSPawnData* PawnData = PawnExtComp->GetPawnData<UHSPawnData>())
-//		{
-//			return PawnData->DefaultCameraMode;
-//		}
-//	}
-//
-//	return nullptr;
-//}
-//
-//void UHSHeroComponent::SetAbilityCameraMode(TSubclassOf<UHSCameraMode> CameraMode, const FGameplayAbilitySpecHandle& OwningSpecHandle)
-//{
-//	if (CameraMode)
-//	{
-//		AbilityCameraMode = CameraMode;
-//		AbilityCameraModeOwningSpecHandle = OwningSpecHandle;
-//	}
-//}
-//
-//void UHSHeroComponent::ClearAbilityCameraMode(const FGameplayAbilitySpecHandle& OwningSpecHandle)
-//{
-//	if (AbilityCameraModeOwningSpecHandle == OwningSpecHandle)
-//	{
-//		AbilityCameraMode = nullptr;
-//		AbilityCameraModeOwningSpecHandle = FGameplayAbilitySpecHandle();
-//	}
-//}
+TSubclassOf<UHSCameraMode> UHSHeroComponent::DetermineCameraMode() const
+{
+	if (AbilityCameraMode)
+	{
+		return AbilityCameraMode;
+	}
+
+	const APawn* Pawn = GetPawn<APawn>();
+	if (!Pawn)
+	{
+		return nullptr;
+	}
+
+	if (UHSPawnExtensionComponent* PawnExtComp = UHSPawnExtensionComponent::FindPawnExtensionComponent(Pawn))
+	{
+		if (const UHSPawnData* PawnData = PawnExtComp->GetPawnData<UHSPawnData>())
+		{
+			return PawnData->DefaultCameraMode;
+		}
+	}
+
+	return nullptr;
+}
+
+void UHSHeroComponent::SetAbilityCameraMode(TSubclassOf<UHSCameraMode> CameraMode, const FGameplayAbilitySpecHandle& OwningSpecHandle)
+{
+	if (CameraMode)
+	{
+		AbilityCameraMode = CameraMode;
+		AbilityCameraModeOwningSpecHandle = OwningSpecHandle;
+	}
+}
+
+void UHSHeroComponent::ClearAbilityCameraMode(const FGameplayAbilitySpecHandle& OwningSpecHandle)
+{
+	if (AbilityCameraModeOwningSpecHandle == OwningSpecHandle)
+	{
+		AbilityCameraMode = nullptr;
+		AbilityCameraModeOwningSpecHandle = FGameplayAbilitySpecHandle();
+	}
+}

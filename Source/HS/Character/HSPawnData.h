@@ -7,6 +7,7 @@
 class UHSAbilitySet;
 class UHSAbilityTagRelationshipMapping;
 class UHSInputConfig;
+class UHSCameraMode;
 
 UCLASS(BlueprintType, Const, meta = (DisplayName = "HS Pawn Data", ShortTooltip = "Data asset used to define a Pawn."))
 class HS_API UHSPawnData : public UPrimaryDataAsset
@@ -33,7 +34,7 @@ public:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "HS|Input")
 	TObjectPtr<UHSInputConfig> InputConfig;
 
-	//// Default camera mode used by player controlled pawns.
-	//UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "HS|Camera")
-	//TSubclassOf<UHSCameraMode> DefaultCameraMode;
+	// Default camera mode used by player controlled pawns.
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "HS|Camera")
+	TSubclassOf<UHSCameraMode> DefaultCameraMode;
 };

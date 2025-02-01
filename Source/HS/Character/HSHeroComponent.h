@@ -37,11 +37,11 @@ public:
 	UFUNCTION(BlueprintPure, Category = "HS|Hero")
 	static UHSHeroComponent* FindHeroComponent(const AActor* Actor) { return (Actor ? Actor->FindComponentByClass<UHSHeroComponent>() : nullptr); }
 
-	///** Overrides the camera from an active gameplay ability */
-	//void SetAbilityCameraMode(TSubclassOf<UHSCameraMode> CameraMode, const FGameplayAbilitySpecHandle& OwningSpecHandle);
+	/** Overrides the camera from an active gameplay ability */
+	void SetAbilityCameraMode(TSubclassOf<UHSCameraMode> CameraMode, const FGameplayAbilitySpecHandle& OwningSpecHandle);
 
-	///** Clears the camera override if it is set */
-	//void ClearAbilityCameraMode(const FGameplayAbilitySpecHandle& OwningSpecHandle);
+	/** Clears the camera override if it is set */
+	void ClearAbilityCameraMode(const FGameplayAbilitySpecHandle& OwningSpecHandle);
 
 	// Adds mode-specific input config
 	void AddAdditionalInputConfig(const UHSInputConfig* InputConfig);
@@ -82,7 +82,7 @@ protected:
 	void Input_LookStick(const FInputActionValue& InputActionValue);
 	void Input_Crouch(const FInputActionValue& InputActionValue);
 
-	//TSubclassOf<UHSCameraMode> DetermineCameraMode() const;
+	TSubclassOf<UHSCameraMode> DetermineCameraMode() const;
 
 	void OnInputConfigActivated(const FLoadedMappableConfigPair& ConfigPair);
 	void OnInputConfigDeactivated(const FLoadedMappableConfigPair& ConfigPair);
@@ -91,9 +91,9 @@ protected:
 	UPROPERTY(EditAnywhere)
 	TArray<FInputMappingContextAndPriority> DefaultInputMappings;
 
-	///** Camera mode set by an ability. */
-	//UPROPERTY()
-	//TSubclassOf<UHSCameraMode> AbilityCameraMode;
+	/** Camera mode set by an ability. */
+	UPROPERTY()
+	TSubclassOf<UHSCameraMode> AbilityCameraMode;
 
 	/** Spec handle for the last ability to set a camera mode. */
 	FGameplayAbilitySpecHandle AbilityCameraModeOwningSpecHandle;
