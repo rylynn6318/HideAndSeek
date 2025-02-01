@@ -67,7 +67,6 @@ public:
 	// ~IGameFrameworkInitStateInterface interface
 
 protected:
-
 	virtual void OnRegister() override;
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
@@ -83,9 +82,6 @@ protected:
 	void Input_Crouch(const FInputActionValue& InputActionValue);
 
 	TSubclassOf<UHSCameraMode> DetermineCameraMode() const;
-
-	void OnInputConfigActivated(const FLoadedMappableConfigPair& ConfigPair);
-	void OnInputConfigDeactivated(const FLoadedMappableConfigPair& ConfigPair);
 
 protected:
 	UPROPERTY(EditAnywhere)

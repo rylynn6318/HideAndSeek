@@ -3,66 +3,220 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Character.h"
-#include "InputActionValue.h"
-#include "GenericTeamAgentInterface.h"
 #include "AbilitySystemInterface.h"
+#include "GameplayCueInterface.h"
+#include "GameplayTagAssetInterface.h"
+#include "ModularCharacter.h"
+#include "Teams/HSTeamAgentInterface.h"
+
 #include "HSCharacter.generated.h"
 
-class UHSInputConfig;
+class AController;
+class AHSPlayerController;
+class AHSPlayerState;
+class FLifetimeProperty;
+class IRepChangedPropertyTracker;
+class UAbilitySystemComponent;
+class UInputComponent;
 class UHSAbilitySystemComponent;
+class UHSCameraComponent;
+class UHSHealthComponent;
+class UHSPawnExtensionComponent;
+struct FGameplayTag;
+struct FGameplayTagContainer;
 
-UCLASS(config=Game)
-class AHSCharacter : public ACharacter, public IAbilitySystemInterface, public IGenericTeamAgentInterface
+
+/**
+ * FHSReplicatedAcceleration: Compressed representation of acceleration
+ */
+USTRUCT()
+struct FHSReplicatedAcceleration
+{
+	GENERATED_BODY()
+
+	UPROPERTY()
+	uint8 AccelXYRadians = 0;	// Direction of XY accel component, quantized to represent [0, 2*pi]
+
+	UPROPERTY()
+	uint8 AccelXYMagnitude = 0;	//Accel rate of XY component, quantized to represent [0, MaxAcceleration]
+
+	UPROPERTY()
+	int8 AccelZ = 0;	// Raw Z accel rate component, quantized to represent [-MaxAcceleration, MaxAcceleration]
+};
+
+/** The type we use to send FastShared movement updates. */
+USTRUCT()
+struct FSharedRepMovement
+{
+	GENERATED_BODY()
+
+	FSharedRepMovement();
+
+	bool FillForCharacter(ACharacter* Character);
+	bool Equals(const FSharedRepMovement& Other, ACharacter* Character) const;
+
+	bool NetSerialize(FArchive& Ar, class UPackageMap* Map, bool& bOutSuccess);
+
+	UPROPERTY(Transient)
+	FRepMovement RepMovement;
+
+	UPROPERTY(Transient)
+	float RepTimeStamp = 0.0f;
+
+	UPROPERTY(Transient)
+	uint8 RepMovementMode = 0;
+
+	UPROPERTY(Transient)
+	bool bProxyIsJumpForceApplied = false;
+
+	UPROPERTY(Transient)
+	bool bIsCrouched = false;
+};
+
+template<>
+struct TStructOpsTypeTraits<FSharedRepMovement> : public TStructOpsTypeTraitsBase2<FSharedRepMovement>
+{
+	enum
+	{
+		WithNetSerializer = true,
+		WithNetSharedSerialization = true,
+	};
+};
+
+/**
+ * AHSCharacter
+ *
+ *	The base character pawn class used by this project.
+ *	Responsible for sending events to pawn components.
+ *	New behavior should be added via pawn components when possible.
+ */
+UCLASS(Config = Game, Meta = (ShortTooltip = "The base character pawn class used by this project."))
+class HS_API AHSCharacter : public AModularCharacter, public IAbilitySystemInterface, public IGameplayCueInterface, public IGameplayTagAssetInterface, public IHSTeamAgentInterface
 {
 	GENERATED_BODY()
 
 public:
-	/** Returns CameraBoom subobject **/
-	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
-	/** Returns FollowCamera subobject **/
-	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+	AHSCharacter(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get());
 
-public:
-	AHSCharacter();
+	UFUNCTION(BlueprintCallable, Category = "HS|Character")
+	AHSPlayerController* GetHSPlayerController() const;
 
-	// IGenericTeamAgentInterface Interface
-	virtual void SetGenericTeamId(const FGenericTeamId& TeamID) override;
-	virtual FGenericTeamId GetGenericTeamId() const override;
-	// ~IGenericTeamAgentInterface Interface
+	UFUNCTION(BlueprintCallable, Category = "HS|Character")
+	AHSPlayerState* GetHSPlayerState() const;
 
-	// APawn Interface
-	virtual void OnRep_PlayerState() override;
-	virtual void PossessedBy(AController* NewController) override;
-	// ~APawn Interface
-
-	// IAbilitySystemInterface Interface
-	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
-	// ~IAbilitySystemInterface Interface
+	UFUNCTION(BlueprintCallable, Category = "HS|Character")
 	UHSAbilitySystemComponent* GetHSAbilitySystemComponent() const;
+	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
+
+	virtual void GetOwnedGameplayTags(FGameplayTagContainer& TagContainer) const override;
+	virtual bool HasMatchingGameplayTag(FGameplayTag TagToCheck) const override;
+	virtual bool HasAllMatchingGameplayTags(const FGameplayTagContainer& TagContainer) const override;
+	virtual bool HasAnyMatchingGameplayTags(const FGameplayTagContainer& TagContainer) const override;
 
 	void ToggleCrouch();
 
-protected:
-	// APawn interface
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	//~AActor interface
+	virtual void PreInitializeComponents() override;
+	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+	virtual void Reset() override;
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	virtual void PreReplication(IRepChangedPropertyTracker& ChangedPropertyTracker) override;
+	//~End of AActor interface
+
+	//~APawn interface
+	virtual void NotifyControllerChanged() override;
+	//~End of APawn interface
+
+	//~IHSTeamAgentInterface interface
+	virtual void SetGenericTeamId(const FGenericTeamId& NewTeamID) override;
+	virtual FGenericTeamId GetGenericTeamId() const override;
+	virtual FOnHSTeamIndexChangedDelegate* GetOnTeamIndexChangedDelegate() override;
+	//~End of IHSTeamAgentInterface interface
+
+	/** RPCs that is called on frames when default property replication is skipped. This replicates a single movement update to everyone. */
+	UFUNCTION(NetMulticast, unreliable)
+	void FastSharedReplication(const FSharedRepMovement& SharedRepMovement);
+
+	// Last FSharedRepMovement we sent, to avoid sending repeatedly.
+	FSharedRepMovement LastSharedReplication;
+
+	virtual bool UpdateSharedReplication();
 
 protected:
-	/** Camera boom positioning the camera behind the character */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-	class USpringArmComponent* CameraBoom;
+	virtual void OnAbilitySystemInitialized();
+	virtual void OnAbilitySystemUninitialized();
 
-	/** Follow camera */
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-	class UCameraComponent* FollowCamera;
+	virtual void PossessedBy(AController* NewController) override;
+	virtual void UnPossessed() override;
 
-	UPROPERTY(BlueprintReadOnly, Category = "Teams")
-	FGenericTeamId TeamId = FGenericTeamId::NoTeam;
+	virtual void OnRep_Controller() override;
+	virtual void OnRep_PlayerState() override;
 
-	UPROPERTY(EditDefaultsOnly, Category = "Input")
-	TObjectPtr<UHSInputConfig> InputConfig;
+	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
-	UPROPERTY(EditDefaultsOnly, Category = "HS|Ability")
-	TObjectPtr<UHSAbilitySystemComponent> AbilitySystemComponent;
+	void InitializeGameplayTags();
+
+	virtual void FellOutOfWorld(const class UDamageType& dmgType) override;
+
+	// Begins the death sequence for the character (disables collision, disables movement, etc...)
+	UFUNCTION()
+	virtual void OnDeathStarted(AActor* OwningActor);
+
+	// Ends the death sequence for the character (detaches controller, destroys pawn, etc...)
+	UFUNCTION()
+	virtual void OnDeathFinished(AActor* OwningActor);
+
+	void DisableMovementAndCollision();
+	void DestroyDueToDeath();
+	void UninitAndDestroy();
+
+	// Called when the death sequence for the character has completed
+	UFUNCTION(BlueprintImplementableEvent, meta = (DisplayName = "OnDeathFinished"))
+	void K2_OnDeathFinished();
+
+	virtual void OnMovementModeChanged(EMovementMode PrevMovementMode, uint8 PreviousCustomMode) override;
+	void SetMovementModeTag(EMovementMode MovementMode, uint8 CustomMovementMode, bool bTagEnabled);
+
+	virtual void OnStartCrouch(float HalfHeightAdjust, float ScaledHalfHeightAdjust) override;
+	virtual void OnEndCrouch(float HalfHeightAdjust, float ScaledHalfHeightAdjust) override;
+
+	virtual bool CanJumpInternal_Implementation() const;
+
+private:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "HS|Character", Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UHSPawnExtensionComponent> PawnExtComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "HS|Character", Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UHSHealthComponent> HealthComponent;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "HS|Character", Meta = (AllowPrivateAccess = "true"))
+	TObjectPtr<UHSCameraComponent> CameraComponent;
+
+	UPROPERTY(Transient, ReplicatedUsing = OnRep_ReplicatedAcceleration)
+	FHSReplicatedAcceleration ReplicatedAcceleration;
+
+	UPROPERTY(ReplicatedUsing = OnRep_MyTeamID)
+	FGenericTeamId MyTeamID;
+
+	UPROPERTY()
+	FOnHSTeamIndexChangedDelegate OnTeamChangedDelegate;
+
+protected:
+	// Called to determine what happens to the team ID when possession ends
+	virtual FGenericTeamId DetermineNewTeamAfterPossessionEnds(FGenericTeamId OldTeamID) const
+	{
+		// This could be changed to return, e.g., OldTeamID if you want to keep it assigned afterwards, or return an ID for some neutral faction, or etc...
+		return FGenericTeamId::NoTeam;
+	}
+
+private:
+	UFUNCTION()
+	void OnControllerChangedTeam(UObject* TeamAgent, int32 OldTeam, int32 NewTeam);
+
+	UFUNCTION()
+	void OnRep_ReplicatedAcceleration();
+
+	UFUNCTION()
+	void OnRep_MyTeamID(FGenericTeamId OldTeamID);
 };
-

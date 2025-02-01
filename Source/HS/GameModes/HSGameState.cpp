@@ -2,7 +2,7 @@
 #include "HSGameState.h"
 #include "AbilitySystem/HSAbilitySystemComponent.h"
 #include "GameModes/HSExperienceManagerComponent.h"
-#include "HSVerbMessage.h"
+#include "Messages/HSVerbMessage.h"
 #include "HSLogChannels.h"
 #include "GameFramework/PlayerState.h"
 #include "GameFramework/GameplayMessageSubsystem.h"

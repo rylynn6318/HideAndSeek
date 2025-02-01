@@ -21,7 +21,7 @@
 // * UHSLocalPlayer
 // */
 //UCLASS()
-//class HSGAME_API UHSLocalPlayer : public UCommonLocalPlayer, public IHSTeamAgentInterface
+//class HS_API UHSLocalPlayer : public UCommonLocalPlayer, public IHSTeamAgentInterface
 //{
 //	GENERATED_BODY()
 //

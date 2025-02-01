@@ -1,10 +1,11 @@
-
 #pragma once
 
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
+
 #include "HSVerbMessage.generated.h"
 
+// Represents a generic message of the form Instigator Verb Target (in Context, with Magnitude)
 USTRUCT(BlueprintType)
 struct FHSVerbMessage
 {
@@ -30,4 +31,7 @@ struct FHSVerbMessage
 
 	UPROPERTY(BlueprintReadWrite, Category = "Gameplay")
 	double Magnitude = 1.0;
+
+	// Returns a debug string representation of this message
+	HS_API FString ToString() const;
 };

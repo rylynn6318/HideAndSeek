@@ -82,7 +82,7 @@ void UHSExperienceManagerComponent::EndPlay(const EEndPlayReason::Type EndPlayRe
 		NumObservedPausers = 0;
 
 		// Deactivate and unload the actions
-		FGameFeatureDeactivatingContext Context(FSimpleDelegate::CreateUObject(this, &ThisClass::OnActionDeactivationCompleted));
+		FGameFeatureDeactivatingContext Context(TEXT(""), [this](FStringView) { this->OnActionDeactivationCompleted(); });
 
 		const FWorldContext* ExistingWorldContext = GEngine->GetWorldContextFromWorld(GetWorld());
 		if (ExistingWorldContext)
@@ -125,18 +125,18 @@ void UHSExperienceManagerComponent::EndPlay(const EEndPlayReason::Type EndPlayRe
 	}
 }
 
-//bool UHSExperienceManagerComponent::ShouldShowLoadingScreen(FString& OutReason) const
-//{
-//	if (LoadState != EHSExperienceLoadState::Loaded)
-//	{
-//		OutReason = TEXT("Experience still loading");
-//		return true;
-//	}
-//	else
-//	{
-//		return false;
-//	}
-//}
+bool UHSExperienceManagerComponent::ShouldShowLoadingScreen(FString& OutReason) const
+{
+	if (LoadState != EHSExperienceLoadState::Loaded)
+	{
+		OutReason = TEXT("Experience still loading");
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
 
 void UHSExperienceManagerComponent::SetCurrentExperience(FPrimaryAssetId ExperienceId)
 {

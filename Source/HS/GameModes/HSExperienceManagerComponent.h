@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Components/GameStateComponent.h"
-//#include "LoadingProcessInterface.h"
+#include "LoadingProcessInterface.h"
 #include "HSExperienceManagerComponent.generated.h"
 
 namespace UE::GameFeatures { struct FResult; }
@@ -25,7 +25,7 @@ enum class EHSExperienceLoadState
 };
 
 UCLASS()
-class HS_API UHSExperienceManagerComponent : public UGameStateComponent//, public ILoadingProcessInterface
+class HS_API UHSExperienceManagerComponent : public UGameStateComponent, public ILoadingProcessInterface
 {
 	GENERATED_BODY()
 
@@ -37,7 +37,7 @@ public:
 	//~End of UActorComponent interface
 
 	//~ILoadingProcessInterface interface
-	//virtual bool ShouldShowLoadingScreen(FString& OutReason) const override;
+	virtual bool ShouldShowLoadingScreen(FString& OutReason) const override;
 	//~End of ILoadingProcessInterface
 
 	// Tries to set the current experience, either a UI or gameplay one

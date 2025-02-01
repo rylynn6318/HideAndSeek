@@ -21,11 +21,12 @@ public class HS : ModuleRules
 			"EnhancedInput",
 			"TargetingSystem",
 			"AIModule",
-			"UMG",
-			"AIModule",
 			"ModularGameplay",
 			"ModularGameplayActors",
 			"GameFeatures",
+			"SignificanceManager",
+			"PhysicsCore",
+			"CommonLoadingScreen",
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[]
@@ -33,8 +34,31 @@ public class HS : ModuleRules
 			"NetCore",
 			"GameplayMessageRuntime",
 			"CommonGame",
+			"CommonUI",
+			"UMG",
 		});
 
 		PrivateIncludePaths.AddRange(new string[] { "HS" });
+
+		// Generate compile errors if using DrawDebug functions in test/shipping builds.
+		PublicDefinitions.Add("SHIPPING_DRAW_DEBUG_ERROR=1");
+
+		// Basic setup for External RPC Framework.
+		// Functionality within framework will be stripped in shipping to remove vulnerabilities.
+		PrivateDependencyModuleNames.Add("ExternalRpcRegistry");
+		PrivateDependencyModuleNames.Add("HTTPServer"); // Dependency for ExternalRpcRegistry
+		if (Target.Configuration == UnrealTargetConfiguration.Shipping)
+		{
+			PublicDefinitions.Add("WITH_RPC_REGISTRY=0");
+			PublicDefinitions.Add("WITH_HTTPSERVER_LISTENERS=0");
+		}
+		else
+		{
+			PublicDefinitions.Add("WITH_RPC_REGISTRY=1");
+			PublicDefinitions.Add("WITH_HTTPSERVER_LISTENERS=1");
+		}
+
+		SetupGameplayDebuggerSupport(Target);
+		SetupIrisSupport(Target);
 	}
 }

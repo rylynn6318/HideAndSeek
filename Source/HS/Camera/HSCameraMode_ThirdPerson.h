@@ -22,11 +22,9 @@ class UHSCameraMode_ThirdPerson : public UHSCameraMode
 	GENERATED_BODY()
 
 public:
-
 	UHSCameraMode_ThirdPerson();
 
 protected:
-
 	virtual void UpdateView(float DeltaTime) override;
 
 	void UpdateForTarget(float DeltaTime);
@@ -35,44 +33,22 @@ protected:
 
 	virtual void DrawDebug(UCanvas* Canvas) const override;
 
-protected:
+	void SetTargetCrouchOffset(FVector NewTargetOffset);
+	void UpdateCrouchOffset(float DeltaTime);
 
-	// Curve that defines local-space offsets from the target using the view pitch to evaluate the curve.
-	UPROPERTY(EditDefaultsOnly, Category = "Third Person", Meta = (EditCondition = "!bUseRuntimeFloatCurves"))
-	TObjectPtr<const UCurveVector> TargetOffsetCurve;
-
-	// UE-103986: Live editing of RuntimeFloatCurves during PIE does not work (unlike curve assets).
-	// Once that is resolved this will become the default and TargetOffsetCurve will be removed.
-	UPROPERTY(EditDefaultsOnly, Category = "Third Person")
-	bool bUseRuntimeFloatCurves;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Third Person", Meta = (EditCondition = "bUseRuntimeFloatCurves"))
-	FRuntimeFloatCurve TargetOffsetX;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Third Person", Meta = (EditCondition = "bUseRuntimeFloatCurves"))
-	FRuntimeFloatCurve TargetOffsetY;
-
-	UPROPERTY(EditDefaultsOnly, Category = "Third Person", Meta = (EditCondition = "bUseRuntimeFloatCurves"))
-	FRuntimeFloatCurve TargetOffsetZ;
-
-	// Alters the speed that a crouch offset is blended in or out
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Third Person")
-	float CrouchOffsetBlendMultiplier = 5.0f;
-
-	// Penetration prevention
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Collision")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Collision")
 	float PenetrationBlendInTime = 0.1f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Collision")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Collision")
 	float PenetrationBlendOutTime = 0.15f;
 
 	/** If true, does collision checks to keep the camera out of the world. */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Collision")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Collision")
 	bool bPreventPenetration = true;
 
 	/** If true, try to detect nearby walls and move the camera in anticipation.  Helps prevent popping. */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Collision")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Collision")
 	bool bDoPredictiveAvoidance = true;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Collision")
@@ -103,13 +79,30 @@ public:
 #endif
 
 protected:
-	
-	void SetTargetCrouchOffset(FVector NewTargetOffset);
-	void UpdateCrouchOffset(float DeltaTime);
+	// Curve that defines local-space offsets from the target using the view pitch to evaluate the curve.
+	UPROPERTY(EditDefaultsOnly, Category = "Third Person", Meta = (EditCondition = "!bUseRuntimeFloatCurves"))
+	TObjectPtr<const UCurveVector> TargetOffsetCurve;
+
+	// UE-103986: Live editing of RuntimeFloatCurves during PIE does not work (unlike curve assets).
+	// Once that is resolved this will become the default and TargetOffsetCurve will be removed.
+	UPROPERTY(EditDefaultsOnly, Category = "Third Person")
+	bool bUseRuntimeFloatCurves;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Third Person", Meta = (EditCondition = "bUseRuntimeFloatCurves"))
+	FRuntimeFloatCurve TargetOffsetX;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Third Person", Meta = (EditCondition = "bUseRuntimeFloatCurves"))
+	FRuntimeFloatCurve TargetOffsetY;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Third Person", Meta = (EditCondition = "bUseRuntimeFloatCurves"))
+	FRuntimeFloatCurve TargetOffsetZ;
+
+	// Alters the speed that a crouch offset is blended in or out
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Third Person")
+	float CrouchOffsetBlendMultiplier = 5.0f;
 
 	FVector InitialCrouchOffset = FVector::ZeroVector;
 	FVector TargetCrouchOffset = FVector::ZeroVector;
 	float CrouchOffsetBlendPct = 1.0f;
 	FVector CurrentCrouchOffset = FVector::ZeroVector;
-	
 };
