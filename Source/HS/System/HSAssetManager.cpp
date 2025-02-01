@@ -58,7 +58,7 @@ UObject* UHSAssetManager::SynchronousLoadAsset(const FSoftObjectPath& AssetPath)
 			LogTimePtr = MakeUnique<FScopeLogTime>(*FString::Printf(TEXT("Synchronously loaded asset [%s]"), *AssetPath.ToString()), nullptr, FScopeLogTime::ScopeLog_Seconds);
 		}
 
-		if (UAssetManager::IsValid())
+		if (UAssetManager::IsInitialized())
 		{
 			return UAssetManager::GetStreamableManager().LoadSynchronous(AssetPath, false);
 		}

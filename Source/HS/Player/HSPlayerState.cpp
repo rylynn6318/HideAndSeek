@@ -22,7 +22,7 @@ AHSPlayerState::AHSPlayerState()
 	AbilitySystemComponent->SetIsReplicated(true);
 
 	// AbilitySystemComponent needs to be updated at a high frequency.
-	NetUpdateFrequency = 100.0f;
+	SetNetUpdateFrequency(100.0f);
 }
 
 void AHSPlayerState::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
