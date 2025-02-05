@@ -54,9 +54,9 @@ protected:
 	template <typename GameDataClass>
 	const GameDataClass& GetOrLoadTypedGameData(const TSoftObjectPtr<GameDataClass>& DataPath)
 	{
-		if (TObjectPtr<UPrimaryDataAsset> const* pResult = GameDataMap.Find(GameDataClass::StaticClass()))
+		if (TObjectPtr<UPrimaryDataAsset> const* Result = GameDataMap.Find(GameDataClass::StaticClass()))
 		{
-			return *CastChecked<GameDataClass>(*pResult);
+			return *CastChecked<GameDataClass>(*Result);
 		}
 
 		// Does a blocking load if needed
@@ -82,7 +82,7 @@ protected:
 protected:
 	// Global game data asset to use.
 	UPROPERTY(Config)
-	TSoftObjectPtr<UHSGameData> HSGameDataPath;
+	TSoftObjectPtr<UHSGameData> DefaultGameData;
 
 	// Loaded version of the game data
 	UPROPERTY(Transient)
@@ -106,7 +106,6 @@ private:
 	TArray<FHSAssetManagerStartupJob> StartupJobs;
 
 private:
-
 	// Assets loaded and tracked by the asset manager.
 	UPROPERTY()
 	TSet<TObjectPtr<const UObject>> LoadedAssets;

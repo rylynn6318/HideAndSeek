@@ -130,10 +130,9 @@ void UHSAssetManager::InitializeGameplayCueManager()
 	GCM->LoadAlwaysLoadedCues();
 }
 
-
 const UHSGameData& UHSAssetManager::GetGameData()
 {
-	return GetOrLoadTypedGameData<UHSGameData>(HSGameDataPath);
+	return GetOrLoadTypedGameData<UHSGameData>(DefaultGameData);
 }
 
 const UHSPawnData* UHSAssetManager::GetDefaultPawnData() const
@@ -188,7 +187,6 @@ UPrimaryDataAsset* UHSAssetManager::LoadGameDataOfClass(TSubclassOf<UPrimaryData
 
 	return Asset;
 }
-
 
 void UHSAssetManager::DoAllStartupJobs()
 {
