@@ -88,14 +88,14 @@ void AHSCharacter::BeginPlay()
 
 	UWorld* World = GetWorld();
 
-	const bool bRegisterWithSignificanceManager = !IsNetMode(NM_DedicatedServer);
-	if (bRegisterWithSignificanceManager)
-	{
-		if (UHSSignificanceManager* SignificanceManager = USignificanceManager::Get<UHSSignificanceManager>(World))
-		{
-			//@TODO: SignificanceManager->RegisterObject(this, (EFortSignificanceType)SignificanceType);
-		}
-	}
+	//const bool bRegisterWithSignificanceManager = !IsNetMode(NM_DedicatedServer);
+	//if (bRegisterWithSignificanceManager)
+	//{
+	//	if (UHSSignificanceManager* SignificanceManager = USignificanceManager::Get<UHSSignificanceManager>(World))
+	//	{
+	//		//@TODO: SignificanceManager->RegisterObject(this, (EFortSignificanceType)SignificanceType);
+	//	}
+	//}
 }
 
 void AHSCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -104,14 +104,14 @@ void AHSCharacter::EndPlay(const EEndPlayReason::Type EndPlayReason)
 
 	UWorld* World = GetWorld();
 
-	const bool bRegisterWithSignificanceManager = !IsNetMode(NM_DedicatedServer);
-	if (bRegisterWithSignificanceManager)
-	{
-		if (UHSSignificanceManager* SignificanceManager = USignificanceManager::Get<UHSSignificanceManager>(World))
-		{
-			SignificanceManager->UnregisterObject(this);
-		}
-	}
+	//const bool bRegisterWithSignificanceManager = !IsNetMode(NM_DedicatedServer);
+	//if (bRegisterWithSignificanceManager)
+	//{
+	//	if (UHSSignificanceManager* SignificanceManager = USignificanceManager::Get<UHSSignificanceManager>(World))
+	//	{
+	//		SignificanceManager->UnregisterObject(this);
+	//	}
+	//}
 }
 
 void AHSCharacter::Reset()
