@@ -11,7 +11,8 @@
 			"AdditionalDependencies": [
 				"Engine",
 				"EnhancedInput",
-				"ModularGameplay"
+				"ModularGameplay",
+				"DeveloperSettings"
 			]
 		}
 	],
@@ -58,15 +59,35 @@
 		{
 			"Name": "CommonUI",
 			"Enabled": true
+		},
+		{
+			"Name": "CommonUser",
+			"Enabled": true
+		},
+		{
+			"Name": "UIExtension",
+			"Enabled": true
+		},
+		{
+			"Name": "GameSettings",
+			"Enabled": true
+		},
+		{
+			"Name": "DTLSHandlerComponent",
+			"Enabled": true
+		},
+		{
+			"Name": "GameSubtitles",
+			"Enabled": true
+		},
+		{
+			"Name": "AudioModulation",
+			"Enabled": true
 		}
 	],
 	"TargetPlatforms": [
 		"Android",
 		"IOS",
-		"Linux",
-		"LinuxArm64",
-		"Mac",
-		"Windows",
-		"HoloLens"
+		"Windows"
 	]
 }

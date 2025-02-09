@@ -9,7 +9,7 @@
 #include "GameFeatureAction.h"
 #include "GameFeaturesSubsystemSettings.h"
 #include "TimerManager.h"
-//#include "Settings/HSSettingsLocal.h"
+#include "Settings/HSSettingsLocal.h"
 #include "HSLogChannels.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(HSExperienceManagerComponent)
@@ -27,16 +27,16 @@ namespace HSConsoleVariables
 {
 	static float ExperienceLoadRandomDelayMin = 0.0f;
 	static FAutoConsoleVariableRef CVarExperienceLoadRandomDelayMin(
-		TEXT("lyra.chaos.ExperienceDelayLoad.MinSecs"),
+		TEXT("HS.chaos.ExperienceDelayLoad.MinSecs"),
 		ExperienceLoadRandomDelayMin,
-		TEXT("This value (in seconds) will be added as a delay of load completion of the experience (along with the random value lyra.chaos.ExperienceDelayLoad.RandomSecs)"),
+		TEXT("This value (in seconds) will be added as a delay of load completion of the experience (along with the random value HS.chaos.ExperienceDelayLoad.RandomSecs)"),
 		ECVF_Default);
 
 	static float ExperienceLoadRandomDelayRange = 0.0f;
 	static FAutoConsoleVariableRef CVarExperienceLoadRandomDelayRange(
-		TEXT("lyra.chaos.ExperienceDelayLoad.RandomSecs"),
+		TEXT("HS.chaos.ExperienceDelayLoad.RandomSecs"),
 		ExperienceLoadRandomDelayRange,
-		TEXT("A random amount of time between 0 and this value (in seconds) will be added as a delay of load completion of the experience (along with the fixed value lyra.chaos.ExperienceDelayLoad.MinSecs)"),
+		TEXT("A random amount of time between 0 and this value (in seconds) will be added as a delay of load completion of the experience (along with the fixed value HS.chaos.ExperienceDelayLoad.MinSecs)"),
 		ECVF_Default);
 
 	float GetExperienceLoadDelayDuration()

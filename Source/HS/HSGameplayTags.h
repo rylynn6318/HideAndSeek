@@ -66,4 +66,6 @@ namespace HSGameplayTags
 	HS_API	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Movement_Mode_Flying);
 
 	HS_API	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Movement_Mode_Custom);
+
+	HS_API	UE_DECLARE_GAMEPLAY_TAG_EXTERN(UI_Layer_Modal);
 };

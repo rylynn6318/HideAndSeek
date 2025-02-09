@@ -5,7 +5,7 @@
 #include "EnhancedInputSubsystems.h"
 #include "Player/HSPlayerController.h"
 #include "Player/HSPlayerState.h"
-//#include "Player/HSLocalPlayer.h"
+#include "Player/HSLocalPlayer.h"
 #include "Character/HSPawnExtensionComponent.h"
 #include "Character/HSPawnData.h"
 #include "Character/HSCharacter.h"
@@ -116,7 +116,7 @@ bool UHSHeroComponent::CanChangeInitState(UGameFrameworkComponentManager* Manage
 			AHSPlayerController* HSPC = GetController<AHSPlayerController>();
 
 			// The input component and local player is required when locally controlled.
-			if (!Pawn->InputComponent || !HSPC /*|| !HSPC->GetLocalPlayer()*/)
+			if (!Pawn->InputComponent || !HSPC || !HSPC->GetLocalPlayer())
 			{
 				return false;
 			}
@@ -233,8 +233,7 @@ void UHSHeroComponent::InitializePlayerInput(UInputComponent* PlayerInputCompone
 	const APlayerController* PC = GetController<APlayerController>();
 	check(PC);
 
-	//const UHSLocalPlayer* LP = Cast<UHSLocalPlayer>(PC->GetLocalPlayer());
-	const ULocalPlayer* LP = PC->GetLocalPlayer();
+	const UHSLocalPlayer* LP = Cast<UHSLocalPlayer>(PC->GetLocalPlayer());
 	check(LP);
 
 	UEnhancedInputLocalPlayerSubsystem* Subsystem = LP->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();

@@ -16,6 +16,7 @@ public class HS : ModuleRules
 			"GameplayTasks",
 			"Core",
 			"CoreUObject",
+			"CoreOnline",
 			"Engine",
 			"InputCore",
 			"EnhancedInput",
@@ -27,6 +28,7 @@ public class HS : ModuleRules
 			"SignificanceManager",
 			"PhysicsCore",
 			"CommonLoadingScreen",
+			"ApplicationCore",
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[]
@@ -35,7 +37,17 @@ public class HS : ModuleRules
 			"GameplayMessageRuntime",
 			"CommonGame",
 			"CommonUI",
+			"CommonInput",
+			"CommonUser",
 			"UMG",
+			"GameSettings",
+			"UIExtension",
+			"DTLSHandlerComponent",
+			"GameSubtitles",
+			"AudioModulation",
+			"AudioMixer",
+			"DeveloperSettings",
+			"Slate",
 		});
 
 		PrivateIncludePaths.AddRange(new string[] { "HS" });
