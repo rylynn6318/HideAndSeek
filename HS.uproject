@@ -83,6 +83,10 @@
 		{
 			"Name": "AudioModulation",
 			"Enabled": true
+		},
+		{
+			"Name": "Default",
+			"Enabled": true
 		}
 	],
 	"TargetPlatforms": [
