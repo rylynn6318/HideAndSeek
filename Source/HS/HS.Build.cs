@@ -48,6 +48,9 @@ public class HS : ModuleRules
 			"AudioMixer",
 			"DeveloperSettings",
 			"Slate",
+			"Gauntlet",
+			"Json",
+			"EngineSettings",
 		});
 
 		PrivateIncludePaths.AddRange(new string[] { "HS" });

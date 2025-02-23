@@ -57,11 +57,11 @@ protected:
 
 	void HandleMatchAssignmentIfNotExpectingOne();
 
-	//bool TryDedicatedServerLogin();
-	//void HostDedicatedServerMatch(ECommonSessionOnlineMode OnlineMode);
+	bool TryDedicatedServerLogin();
+	void HostDedicatedServerMatch(ECommonSessionOnlineMode OnlineMode);
 
-	//UFUNCTION()
-	//void OnUserInitializedForDedicatedServer(const UCommonUserInfo* UserInfo, bool bSuccess, FText Error, ECommonUserPrivilege RequestedPrivilege, ECommonUserOnlineContext OnlineContext);
+	UFUNCTION()
+	void OnUserInitializedForDedicatedServer(const UCommonUserInfo* UserInfo, bool bSuccess, FText Error, ECommonUserPrivilege RequestedPrivilege, ECommonUserOnlineContext OnlineContext);
 
 public:
 	// Delegate called on player initialization, described above 

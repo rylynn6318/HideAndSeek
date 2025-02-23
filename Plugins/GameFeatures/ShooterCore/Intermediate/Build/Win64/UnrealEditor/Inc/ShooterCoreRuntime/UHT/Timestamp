@@ -1,0 +1,13 @@
+C:\LyraStarterGame\Plugins\GameFeatures\ShooterCore\Source\ShooterCoreRuntime\Public\ShooterCoreRuntimeSettings.h
+C:\LyraStarterGame\Plugins\GameFeatures\ShooterCore\Source\ShooterCoreRuntime\Public\Accolades\LyraAccoladeDefinition.h
+C:\LyraStarterGame\Plugins\GameFeatures\ShooterCore\Source\ShooterCoreRuntime\Public\Input\AimAssistInputModifier.h
+C:\LyraStarterGame\Plugins\GameFeatures\ShooterCore\Source\ShooterCoreRuntime\Public\Input\AimAssistTargetComponent.h
+C:\LyraStarterGame\Plugins\GameFeatures\ShooterCore\Source\ShooterCoreRuntime\Public\Input\AimAssistTargetManagerComponent.h
+C:\LyraStarterGame\Plugins\GameFeatures\ShooterCore\Source\ShooterCoreRuntime\Public\Accolades\LyraAccoladeHostWidget.h
+C:\LyraStarterGame\Plugins\GameFeatures\ShooterCore\Source\ShooterCoreRuntime\Public\MessageProcessors\AssistProcessor.h
+C:\LyraStarterGame\Plugins\GameFeatures\ShooterCore\Source\ShooterCoreRuntime\Public\MessageProcessors\ElimStreakProcessor.h
+C:\LyraStarterGame\Plugins\GameFeatures\ShooterCore\Source\ShooterCoreRuntime\Public\MessageProcessors\ElimChainProcessor.h
+C:\LyraStarterGame\Plugins\GameFeatures\ShooterCore\Source\ShooterCoreRuntime\Public\Messages\ControlPointStatusMessage.h
+C:\LyraStarterGame\Plugins\GameFeatures\ShooterCore\Source\ShooterCoreRuntime\Public\LyraWorldCollectable.h
+C:\LyraStarterGame\Plugins\GameFeatures\ShooterCore\Source\ShooterCoreRuntime\Public\Input\IAimAssistTargetInterface.h
+C:\LyraStarterGame\Plugins\GameFeatures\ShooterCore\Source\ShooterCoreRuntime\Private\TDM_PlayerSpawningManagmentComponent.h
