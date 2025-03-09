@@ -7,7 +7,7 @@
 #include "Interaction/InteractionOption.h"
 #include "Inventory/IPickupable.h"
 
-#include "LyraWorldCollectable.generated.h"
+#include "HSWorldCollectable.generated.h"
 
 class UObject;
 struct FInteractionQuery;
@@ -16,13 +16,13 @@ struct FInteractionQuery;
  * 
  */
 UCLASS(Abstract, Blueprintable)
-class ALyraWorldCollectable : public AActor, public IInteractableTarget, public IPickupable
+class AHSWorldCollectable : public AActor, public IInteractableTarget, public IPickupable
 {
 	GENERATED_BODY()
 
 public:
 
-	ALyraWorldCollectable();
+	AHSWorldCollectable();
 
 	virtual void GatherInteractionOptions(const FInteractionQuery& InteractQuery, FInteractionOptionBuilder& InteractionBuilder) override;
 	virtual FInventoryPickup GetPickupInventory() const override;

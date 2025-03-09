@@ -3,23 +3,23 @@
 #include "MessageProcessors/ElimChainProcessor.h"
 
 #include "GameFramework/PlayerState.h"
-#include "Messages/LyraVerbMessage.h"
+#include "Messages/HSVerbMessage.h"
 #include "NativeGameplayTags.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(ElimChainProcessor)
 
 namespace ElimChain
 {
-	UE_DEFINE_GAMEPLAY_TAG_STATIC(TAG_Lyra_Elimination_Message, "Lyra.Elimination.Message");
+	UE_DEFINE_GAMEPLAY_TAG_STATIC(TAG_HS_Elimination_Message, "HS.Elimination.Message");
 }
 
 void UElimChainProcessor::StartListening()
 {
 	UGameplayMessageSubsystem& MessageSubsystem = UGameplayMessageSubsystem::Get(this);
-	AddListenerHandle(MessageSubsystem.RegisterListener(ElimChain::TAG_Lyra_Elimination_Message, this, &ThisClass::OnEliminationMessage));
+	AddListenerHandle(MessageSubsystem.RegisterListener(ElimChain::TAG_HS_Elimination_Message, this, &ThisClass::OnEliminationMessage));
 }
 
-void UElimChainProcessor::OnEliminationMessage(FGameplayTag Channel, const FLyraVerbMessage& Payload)
+void UElimChainProcessor::OnEliminationMessage(FGameplayTag Channel, const FHSVerbMessage& Payload)
 {
 	// Track elimination chains for the attacker (except for self-eliminations)
 	if (Payload.Instigator != Payload.Target)
@@ -42,7 +42,7 @@ void UElimChainProcessor::OnEliminationMessage(FGameplayTag Channel, const FLyra
 
 				if (FGameplayTag* pTag = ElimChainTags.Find(History.ChainCounter))
 				{
-					FLyraVerbMessage ElimChainMessage;
+					FHSVerbMessage ElimChainMessage;
 					ElimChainMessage.Verb = *pTag;
 					ElimChainMessage.Instigator = InstigatorPS;
 					ElimChainMessage.InstigatorTags = Payload.InstigatorTags;

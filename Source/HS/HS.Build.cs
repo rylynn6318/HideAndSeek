@@ -29,6 +29,8 @@ public class HS : ModuleRules
 			"PhysicsCore",
 			"CommonLoadingScreen",
 			"ApplicationCore",
+			"Niagara",
+			"AsyncMixin",
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[]
@@ -48,12 +50,13 @@ public class HS : ModuleRules
 			"AudioMixer",
 			"DeveloperSettings",
 			"Slate",
+			"SlateCore",
 			"Gauntlet",
 			"Json",
 			"EngineSettings",
 		});
 
-		PrivateIncludePaths.AddRange(new string[] { "HS" });
+		PublicIncludePaths.AddRange(new string[] { "HS" });
 
 		// Generate compile errors if using DrawDebug functions in test/shipping builds.
 		PublicDefinitions.Add("SHIPPING_DRAW_DEBUG_ERROR=1");

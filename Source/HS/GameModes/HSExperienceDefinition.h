@@ -2,7 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
-#include "HSExperienceDefinition.generated.h"
+#include "HSExperienceDefinition.generated.h"	
 
 class UGameFeatureAction;
 class UHSPawnData;

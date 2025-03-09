@@ -3,23 +3,23 @@
 #include "MessageProcessors/ElimStreakProcessor.h"
 
 #include "GameFramework/PlayerState.h"
-#include "Messages/LyraVerbMessage.h"
+#include "Messages/HSVerbMessage.h"
 #include "NativeGameplayTags.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(ElimStreakProcessor)
 
 namespace ElimStreak
 {
-	UE_DEFINE_GAMEPLAY_TAG_STATIC(TAG_Lyra_Elimination_Message, "Lyra.Elimination.Message");
+	UE_DEFINE_GAMEPLAY_TAG_STATIC(TAG_HS_Elimination_Message, "HS.Elimination.Message");
 }
 
 void UElimStreakProcessor::StartListening()
 {
 	UGameplayMessageSubsystem& MessageSubsystem = UGameplayMessageSubsystem::Get(this);
-	AddListenerHandle(MessageSubsystem.RegisterListener(ElimStreak::TAG_Lyra_Elimination_Message, this, &ThisClass::OnEliminationMessage));
+	AddListenerHandle(MessageSubsystem.RegisterListener(ElimStreak::TAG_HS_Elimination_Message, this, &ThisClass::OnEliminationMessage));
 }
 
-void UElimStreakProcessor::OnEliminationMessage(FGameplayTag Channel, const FLyraVerbMessage& Payload)
+void UElimStreakProcessor::OnEliminationMessage(FGameplayTag Channel, const FHSVerbMessage& Payload)
 {
 	// Track elimination streaks for the attacker (except for self-eliminations)
 	if (Payload.Instigator != Payload.Target)
@@ -31,7 +31,7 @@ void UElimStreakProcessor::OnEliminationMessage(FGameplayTag Channel, const FLyr
 
 			if (FGameplayTag* pTag = ElimStreakTags.Find(StreakCount))
 			{
-				FLyraVerbMessage ElimStreakMessage;
+				FHSVerbMessage ElimStreakMessage;
 				ElimStreakMessage.Verb = *pTag;
 				ElimStreakMessage.Instigator = InstigatorPS;
 				ElimStreakMessage.InstigatorTags = Payload.InstigatorTags;

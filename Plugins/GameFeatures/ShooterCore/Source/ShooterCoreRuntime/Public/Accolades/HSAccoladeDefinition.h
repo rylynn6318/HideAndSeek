@@ -6,13 +6,13 @@
 #include "Engine/DataTable.h"
 #include "GameplayTagContainer.h"
 
-#include "LyraAccoladeDefinition.generated.h"
+#include "HSAccoladeDefinition.generated.h"
 
 class UObject;
 class USoundBase;
 
 USTRUCT(BlueprintType)
-struct FLyraAccoladeDefinitionRow : public FTableRowBase
+struct FHSAccoladeDefinitionRow : public FTableRowBase
 {
 	GENERATED_BODY()
 
@@ -51,7 +51,7 @@ public:
  * 
  */
 UCLASS(BlueprintType)
-class ULyraAccoladeDefinition : public UDataAsset
+class UHSAccoladeDefinition : public UDataAsset
 {
 	GENERATED_BODY()
 

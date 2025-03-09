@@ -6,7 +6,7 @@ namespace HSGameplayTags
 {
 	HS_API	FGameplayTag FindTagByString(const FString& TagString, bool bMatchPartialString = false);
 
-	// Declare all of the custom native tags that Lyra will use
+	// Declare all of the custom native tags that HS will use
 	HS_API	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_ActivateFail_IsDead);
 	HS_API	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_ActivateFail_Cooldown);
 	HS_API	UE_DECLARE_GAMEPLAY_TAG_EXTERN(Ability_ActivateFail_Cost);

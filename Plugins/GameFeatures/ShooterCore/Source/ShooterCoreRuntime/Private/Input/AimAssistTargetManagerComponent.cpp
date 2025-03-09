@@ -9,29 +9,29 @@
 #include "GameFramework/InputSettings.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SkeletalMeshComponent.h"
-#include "Character/LyraHealthComponent.h"
+#include "Character/HSHealthComponent.h"
 #include "Input/AimAssistInputModifier.h"
-#include "Player/LyraPlayerState.h"
-#include "Character/LyraHealthComponent.h"
+#include "Player/HSPlayerState.h"
+#include "Character/HSHealthComponent.h"
 #include "Input/IAimAssistTargetInterface.h"
 #include "ShooterCoreRuntimeSettings.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(AimAssistTargetManagerComponent)
 
-namespace LyraConsoleVariables
+namespace HSConsoleVariables
 {
 	static bool bDrawDebugViewfinder = false;
 	static FAutoConsoleVariableRef CVarDrawDebugViewfinder(
-		TEXT("lyra.Weapon.AimAssist.DrawDebugViewfinder"),
+		TEXT("HS.Weapon.AimAssist.DrawDebugViewfinder"),
 		bDrawDebugViewfinder,
 		TEXT("Should we draw a debug box for the aim assist target viewfinder?"),
 		ECVF_Cheat);
 }
 
-const FLyraAimAssistTarget* FindTarget(const TArray<FLyraAimAssistTarget>& Targets, const UShapeComponent* TargetComponent)
+const FHSAimAssistTarget* FindTarget(const TArray<FHSAimAssistTarget>& Targets, const UShapeComponent* TargetComponent)
 {
-	const FLyraAimAssistTarget* FoundTarget = Targets.FindByPredicate(
-	[&TargetComponent](const FLyraAimAssistTarget& Target)
+	const FHSAimAssistTarget* FoundTarget = Targets.FindByPredicate(
+	[&TargetComponent](const FHSAimAssistTarget& Target)
 	{
 		return (Target.TargetShapeComponent == TargetComponent);
 	});
@@ -84,7 +84,7 @@ static bool GatherTargetInfo(const AActor* Actor, const UShapeComponent* ShapeCo
 }
 
 
-void UAimAssistTargetManagerComponent::GetVisibleTargets(const FAimAssistFilter& Filter, const FAimAssistSettings& Settings, const FAimAssistOwnerViewData& OwnerData, const TArray<FLyraAimAssistTarget>& OldTargets, OUT TArray<FLyraAimAssistTarget>& OutNewTargets)
+void UAimAssistTargetManagerComponent::GetVisibleTargets(const FAimAssistFilter& Filter, const FAimAssistSettings& Settings, const FAimAssistOwnerViewData& OwnerData, const TArray<FHSAimAssistTarget>& OldTargets, OUT TArray<FHSAimAssistTarget>& OutNewTargets)
 {
 	TRACE_CPUPROFILER_EVENT_SCOPE(UAimAssistTargetManagerComponent::GetVisibleTargets);
 	OutNewTargets.Reset();
@@ -136,7 +136,7 @@ void UAimAssistTargetManagerComponent::GetVisibleTargets(const FAimAssistFilter&
 		World->OverlapMultiByChannel(OUT OverlapResults, PawnLocation, OwnerData.PlayerTransform.GetRotation(), AimAssistChannel, BoxShape, Params);
 
 #if ENABLE_DRAW_DEBUG && !UE_BUILD_SHIPPING
-		if(LyraConsoleVariables::bDrawDebugViewfinder)
+		if(HSConsoleVariables::bDrawDebugViewfinder)
 		{
 			DrawDebugBox(World, PawnLocation, BoxShape.GetBox(), OwnerData.PlayerTransform.GetRotation(), FColor::Red);	
 		}
@@ -200,7 +200,7 @@ void UAimAssistTargetManagerComponent::GetVisibleTargets(const FAimAssistFilter&
 				continue;
 			}
 			
-			const FLyraAimAssistTarget* OldTarget = FindTarget(OldTargets, AimAssistTarget.TargetShapeComponent.Get());
+			const FHSAimAssistTarget* OldTarget = FindTarget(OldTargets, AimAssistTarget.TargetShapeComponent.Get());
 
 			// Calculate the screen bounds for this target
 			FBox2D TargetScreenBounds(ForceInitToZero);
@@ -228,7 +228,7 @@ void UAimAssistTargetManagerComponent::GetVisibleTargets(const FAimAssistFilter&
 				continue;
 			}
 
-			FLyraAimAssistTarget NewTarget;
+			FHSAimAssistTarget NewTarget;
 
 			NewTarget.TargetShapeComponent = AimAssistTarget.TargetShapeComponent;
 			NewTarget.Location = TargetTransform.GetTranslation();
@@ -260,7 +260,7 @@ void UAimAssistTargetManagerComponent::GetVisibleTargets(const FAimAssistFilter&
 	// Sort the targets by their score so if there are too many so we can limit the amount of visibility traces performed.
 	if (OutNewTargets.Num() > Settings.MaxNumberOfTargets)
 	{
-		OutNewTargets.Sort([](const FLyraAimAssistTarget& TargetA, const FLyraAimAssistTarget& TargetB)
+		OutNewTargets.Sort([](const FHSAimAssistTarget& TargetA, const FHSAimAssistTarget& TargetB)
 		{
 			return (TargetA.SortScore > TargetB.SortScore);
 		});
@@ -270,7 +270,7 @@ void UAimAssistTargetManagerComponent::GetVisibleTargets(const FAimAssistFilter&
 
 	// Do visibliity traces on the targets
 	{
-		for (FLyraAimAssistTarget& Target : OutNewTargets)
+		for (FHSAimAssistTarget& Target : OutNewTargets)
 		{
 			DetermineTargetVisibility(Target, Settings, Filter, OwnerData);
 		}
@@ -309,7 +309,7 @@ bool UAimAssistTargetManagerComponent::DoesTargetPassFilter(const FAimAssistOwne
 		// If the given target is on the same team as the owner, then exclude it from the search	
 		if (!Filter.bIncludeSameFriendlyTargets)
 		{
-			if (const ALyraPlayerState* PS = TargetCharacter->GetPlayerState<ALyraPlayerState>())
+			if (const AHSPlayerState* PS = TargetCharacter->GetPlayerState<AHSPlayerState>())
 			{
 				if (PS->GetTeamId() == OwnerData.TeamID)
 				{
@@ -321,7 +321,7 @@ bool UAimAssistTargetManagerComponent::DoesTargetPassFilter(const FAimAssistOwne
 		// Exclude dead or dying characters
 		if (Filter.bExcludeDeadOrDying)
 		{
-			if (const ULyraHealthComponent* HealthComponent = ULyraHealthComponent::FindHealthComponent(TargetCharacter))
+			if (const UHSHealthComponent* HealthComponent = UHSHealthComponent::FindHealthComponent(TargetCharacter))
 			{
 				if (HealthComponent->IsDeadOrDying())
 				{
@@ -382,7 +382,7 @@ float UAimAssistTargetManagerComponent::GetFOVScale(const APlayerController* PC,
 	return FovScale;
 }
 
-void UAimAssistTargetManagerComponent::DetermineTargetVisibility(FLyraAimAssistTarget& Target, const FAimAssistSettings& Settings, const FAimAssistFilter& Filter, const FAimAssistOwnerViewData& OwnerData)
+void UAimAssistTargetManagerComponent::DetermineTargetVisibility(FHSAimAssistTarget& Target, const FAimAssistSettings& Settings, const FAimAssistFilter& Filter, const FAimAssistOwnerViewData& OwnerData)
 {
 	UWorld* World = GetWorld();
 	check(World);

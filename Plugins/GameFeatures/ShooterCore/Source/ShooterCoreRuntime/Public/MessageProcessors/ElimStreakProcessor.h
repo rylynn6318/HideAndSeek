@@ -9,7 +9,7 @@
 class APlayerState;
 class UObject;
 struct FGameplayTag;
-struct FLyraVerbMessage;
+struct FHSVerbMessage;
 template <typename T> struct TObjectPtr;
 
 // Tracks a streak of eliminations (X eliminations without being eliminated)
@@ -27,7 +27,7 @@ protected:
 	TMap<int32, FGameplayTag> ElimStreakTags;
 
 private:
-	void OnEliminationMessage(FGameplayTag Channel, const FLyraVerbMessage& Payload);
+	void OnEliminationMessage(FGameplayTag Channel, const FHSVerbMessage& Payload);
 
 private:
 	UPROPERTY(Transient)

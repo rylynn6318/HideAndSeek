@@ -103,6 +103,10 @@
 		{
 			"Name": "OnlineServicesNull",
 			"Enabled": true
+		},
+		{
+			"Name": "ShooterCore",
+			"Enabled": true
 		}
 	],
 	"TargetPlatforms": [

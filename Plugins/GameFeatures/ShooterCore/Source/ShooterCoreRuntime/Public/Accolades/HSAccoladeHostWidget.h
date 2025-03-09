@@ -2,18 +2,18 @@
 
 #pragma once
 
-#include "Accolades/LyraAccoladeDefinition.h"
+#include "Accolades/HSAccoladeDefinition.h"
 #include "AsyncMixin.h"
 #include "CommonUserWidget.h"
 #include "GameFramework/GameplayMessageSubsystem.h"
 
-#include "LyraAccoladeHostWidget.generated.h"
+#include "HSAccoladeHostWidget.generated.h"
 
 class UObject;
 class USoundBase;
 class UUserWidget;
 struct FDataRegistryAcquireResult;
-struct FLyraNotificationMessage;
+struct FHSNotificationMessage;
 
 USTRUCT(BlueprintType)
 struct FPendingAccoladeEntry
@@ -21,7 +21,7 @@ struct FPendingAccoladeEntry
 	GENERATED_BODY();
 
 	UPROPERTY(BlueprintReadOnly)
-	FLyraAccoladeDefinitionRow Row; 
+	FHSAccoladeDefinitionRow Row; 
 
 	UPROPERTY(BlueprintReadOnly)
 	TObjectPtr<USoundBase> Sound = nullptr;
@@ -43,7 +43,7 @@ struct FPendingAccoladeEntry
  * 
  */
 UCLASS(BlueprintType)
-class ULyraAccoladeHostWidget : public UCommonUserWidget, public FAsyncMixin
+class UHSAccoladeHostWidget : public UCommonUserWidget, public FAsyncMixin
 {
 	GENERATED_BODY()
 
@@ -79,7 +79,7 @@ private:
 	TArray<FPendingAccoladeEntry> PendingAccoladeDisplays;
 
 
-	void OnNotificationMessage(FGameplayTag Channel, const FLyraNotificationMessage& Notification);
+	void OnNotificationMessage(FGameplayTag Channel, const FHSNotificationMessage& Notification);
 	void OnRegistryLoadCompleted(const FDataRegistryAcquireResult& AccoladeHandle, int32 SequenceID);
 
 	void ConsiderLoadedAccolades();

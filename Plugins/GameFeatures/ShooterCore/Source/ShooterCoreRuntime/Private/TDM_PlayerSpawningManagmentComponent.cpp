@@ -4,9 +4,9 @@
 
 #include "Engine/World.h"
 #include "GameFramework/PlayerState.h"
-#include "GameModes/LyraGameState.h"
-#include "Player/LyraPlayerStart.h"
-#include "Teams/LyraTeamSubsystem.h"
+#include "GameModes/HSGameState.h"
+#include "Player/HSPlayerStart.h"
+#include "Teams/HSTeamSubsystem.h"
 
 #include UE_INLINE_GENERATED_CPP_BY_NAME(TDM_PlayerSpawningManagmentComponent)
 
@@ -17,9 +17,9 @@ UTDM_PlayerSpawningManagmentComponent::UTDM_PlayerSpawningManagmentComponent(con
 {
 }
 
-AActor* UTDM_PlayerSpawningManagmentComponent::OnChoosePlayerStart(AController* Player, TArray<ALyraPlayerStart*>& PlayerStarts)
+AActor* UTDM_PlayerSpawningManagmentComponent::OnChoosePlayerStart(AController* Player, TArray<AHSPlayerStart*>& PlayerStarts)
 {
-	ULyraTeamSubsystem* TeamSubsystem = GetWorld()->GetSubsystem<ULyraTeamSubsystem>();
+	UHSTeamSubsystem* TeamSubsystem = GetWorld()->GetSubsystem<UHSTeamSubsystem>();
 	if (!ensure(TeamSubsystem))
 	{
 		return nullptr;
@@ -33,11 +33,11 @@ AActor* UTDM_PlayerSpawningManagmentComponent::OnChoosePlayerStart(AController* 
 		return nullptr;
 	}
 
-	ALyraGameState* GameState = GetGameStateChecked<ALyraGameState>();
+	AHSGameState* GameState = GetGameStateChecked<AHSGameState>();
 
-	ALyraPlayerStart* BestPlayerStart = nullptr;
+	AHSPlayerStart* BestPlayerStart = nullptr;
 	double MaxDistance = 0;
-	ALyraPlayerStart* FallbackPlayerStart = nullptr;
+	AHSPlayerStart* FallbackPlayerStart = nullptr;
 	double FallbackMaxDistance = 0;
 
 	for (APlayerState* PS : GameState->PlayerArray)
@@ -53,7 +53,7 @@ AActor* UTDM_PlayerSpawningManagmentComponent::OnChoosePlayerStart(AController* 
 		// If the other player isn't on the same team, lets find the furthest spawn from them.
 		if (TeamId != PlayerTeamId)
 		{
-			for (ALyraPlayerStart* PlayerStart : PlayerStarts)
+			for (AHSPlayerStart* PlayerStart : PlayerStarts)
 			{
 				if (APawn* Pawn = PS->GetPawn())
 				{
@@ -67,7 +67,7 @@ AActor* UTDM_PlayerSpawningManagmentComponent::OnChoosePlayerStart(AController* 
 							FallbackMaxDistance = Distance;
 						}
 					}
-					else if (PlayerStart->GetLocationOccupancy(Player) < ELyraPlayerStartLocationOccupancy::Full)
+					else if (PlayerStart->GetLocationOccupancy(Player) < EHSPlayerStartLocationOccupancy::Full)
 					{
 						if (BestPlayerStart == nullptr || Distance > MaxDistance)
 						{

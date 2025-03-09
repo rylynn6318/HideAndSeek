@@ -26,7 +26,7 @@ public class ShooterCoreRuntime : ModuleRules
 			new string[]
 			{
 				"Core",
-				"LyraGame",
+				"HS",
 				"ModularGameplay",
 				"CommonGame",
 				// ... add other public dependencies that you statically link with here ...
