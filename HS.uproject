@@ -107,6 +107,10 @@
 		{
 			"Name": "ShooterCore",
 			"Enabled": true
+		},
+		{
+			"Name": "AsyncMixin",
+			"Enabled": true
 		}
 	],
 	"TargetPlatforms": [
